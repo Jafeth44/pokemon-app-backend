@@ -1,10 +1,12 @@
 import User from "../models/user.model.js";
 import { request, response } from 'express';
+import bcryptjs from 'bcryptjs';
+import { generarJWT } from "../helpers/jwt.js";
 
 
 const create = async (req = request, res = response) => {
 
-  const {email} = req.body;
+  const {email, password} = req.body;
 
   try {
 
@@ -17,14 +19,23 @@ const create = async (req = request, res = response) => {
       });
     }
 
+    //se crea el usuario con el model User
     user = new User(req.body);
 
+    
+    const salt = bcryptjs.genSaltSync();
+    user.password = bcryptjs.hashSync(password, salt);
+    
     await user.save();
+
+    //generar JWT
+    const token = await generarJWT(user.id, user.name);
 
     res.status(201).json({
       ok: true,
       uid: user.id,
-      name: user.name
+      name: user.name,
+      token
     })
 
   } catch (error) {
@@ -52,6 +63,21 @@ const list = async (req = request, res = response) => {
     })
   }
 }
+
+// const delete = async (req = request, res = response) => {
+
+//   try {
+    
+//     const user = req.
+
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       ok: false,
+//       message: 'Unknown error, talk with an administrator'
+//     })
+//   }
+// }
 
 
 export {

@@ -13,6 +13,10 @@ const UserSchema = new mongoose.Schema({
     unique: 'Email already exists',
     match: [/.+\@.+\..+/, 'Please fill a valid email address']
   },
+  password: {
+    type: String,
+    required: 'Password is required'
+  },
   profilePicture: {
     data: Buffer,
     contentType: String
