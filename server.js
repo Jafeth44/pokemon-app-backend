@@ -1,14 +1,30 @@
-import app from "./express.js";
 import 'dotenv/config';
-import mongoose from 'mongoose';
+import { dbConnection } from './database/database.config.js';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import helmet from 'helmet';
+import userRoutes from './routes/user.routes.js';
 
-const {PORT, URI} = process.env;
+const {PORT} = process.env;
 
-mongoose.Promise = global.Promise
-mongoose.connect(URI);
-mongoose.connection.on('connection', (stream) => {
-  console.log(`database connected ${stream}`);
-})
+const app = express();
+
+dbConnection();
+
+app.use(cors());
+
+app.use(express.json());
+
+app.use(cookieParser());
+
+app.use(helmet());
+
+app.use(express.static('public'));
+
+//* Rutas
+app.use(userRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Server running at port ${PORT}`);
