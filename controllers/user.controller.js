@@ -1,10 +1,10 @@
 import User from "../models/user.model.js";
 import { request, response } from 'express';
 import bcryptjs from 'bcryptjs';
-import { generarJWT } from "../helpers/jwt.js";
+// import { generarJWT } from "../helpers/jwt.js";
 
 
-const create = async (req = request, res = response) => {
+const createUser = async (req = request, res = response) => {
 
   const {email, password} = req.body;
 
@@ -29,7 +29,8 @@ const create = async (req = request, res = response) => {
     await user.save();
 
     //generar JWT
-    const token = await generarJWT(user.id, user.name);
+    // const token = await generarJWT(user.id, user.name);
+    //* de momento no le veo la utilidad a los jwt con una app tan simple
 
     res.status(201).json({
       ok: true,
@@ -64,23 +65,51 @@ const list = async (req = request, res = response) => {
   }
 }
 
-// const delete = async (req = request, res = response) => {
+const login = async (req = request, res = response) => {
 
-//   try {
+  const {email, password} = req.body;
+
+  try {
+
+    const user = await User.findOne({email});
+
+    if (!user) return res.status(400).json({
+      ok: false,
+      type: 'email',
+      message: 'Este correo no está registrado'
+    })
+
+    const validPassword = bcryptjs.compareSync(password, user.password);
+
+    if (!validPassword) return res.status(400).json({
+      ok: false,
+      type: 'password',
+      message: 'Contraseña incorrecta'
+    })
+
+    //generar token
+    // const token = await generarJWT(user.id, user.name);
+    //* de momento no le veo la utilidad a los jwt con una app tan simple
+
+    res.status(200).json({
+      ok: true,
+      name: user.name,
+      uid: user.id
+      // token
+    })
     
-//     const user = req.
-
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).json({
-//       ok: false,
-//       message: 'Unknown error, talk with an administrator'
-//     })
-//   }
-// }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      message: 'Unknown error, talk with an administrator'
+    })
+  }
+}
 
 
 export {
-  create,
-  list
+  createUser,
+  list,
+  login
 }
