@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import { request, response } from 'express';
 import bcryptjs from 'bcryptjs';
-// import { generarJWT } from "../helpers/jwt.js";
+import { generarJWT } from "../helpers/jwt.js";
 
 
 const createUser = async (req = request, res = response) => {
@@ -29,7 +29,7 @@ const createUser = async (req = request, res = response) => {
     await user.save();
 
     //generar JWT
-    // const token = await generarJWT(user.id, user.name);
+    const token = await generarJWT(user.id, user.name);
     //* de momento no le veo la utilidad a los jwt con una app tan simple
 
     res.status(201).json({
@@ -88,7 +88,7 @@ const login = async (req = request, res = response) => {
     })
 
     //generar token
-    // const token = await generarJWT(user.id, user.name);
+    const token = await generarJWT(user.id, user.name);
     //* de momento no le veo la utilidad a los jwt con una app tan simple
 
     res.status(200).json({
