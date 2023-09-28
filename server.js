@@ -5,6 +5,7 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import userRoutes from './routes/user.routes.js';
+import postRoutes from './routes/post.routes.js';
 
 const {PORT} = process.env;
 
@@ -24,7 +25,7 @@ app.use(express.static('public'));
 
 //* Rutas
 app.use(userRoutes);
-
+app.use(postRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running at port ${PORT}`);
