@@ -16,14 +16,14 @@ const createPost = async (req = request, res = response, next) => {
 
     await post.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
       message: `${userId} saved a new post for the pokemon ${pokemonId}`
     })
 
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       ok: false,
       message: 'Unknown error, talk with an administrator'
     })
@@ -45,7 +45,7 @@ const listFavorites = async (req = request, res = response) => {
 
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       ok: false,
       message: 'Unknown error, talk with an administrator'
     })
@@ -54,23 +54,45 @@ const listFavorites = async (req = request, res = response) => {
 
 const editPost = async (req = request, res= response) => {
 
-  let {userId, pokemonId} = req.body;
+  const {userId, pokemonId} = req.body;
 
   try {
     
     await Post.findOneAndUpdate({userId, pokemonId}, req.body);
 
-    res.status(200).json({
+    return res.status(200).json({
       ok: true,
       message: `updated pokemon ${pokemonId}`
     })
   } catch (error) {
     console.log(error);
-    res.status(500).json({
+    return res.status(500).json({
       ok: false,
       message: 'Unknown error, talk with an administrator'
     })
   }
 }
 
-export { listFavorites, createPost, editPost }
+const readPost = async (req = request, res= response) => {
+  const {pokemonId, userId} = req.body;
+
+  try {
+    
+    let post = await Post.findOne({pokemonId, userId});
+    console.log(post);
+
+    return res.status(200).json({
+      ok: true,
+      post
+    })
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      ok: false,
+      message: 'Unknown error, talk with an administrator'
+    })
+  }
+}
+
+export { listFavorites, createPost, editPost, readPost }
