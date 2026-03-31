@@ -52,17 +52,17 @@ const listFavorites = async (req = request, res = response) => {
   }
 }
 
-const editPost = async (req = request, res= response) => {
+const editPost = async (req = request, res = response) => {
 
-  const {userId, pokemonId} = req.body;
+  const { userId, pokemonId } = req.body;
 
   try {
-    
-    await Post.findOneAndUpdate({userId, pokemonId}, req.body);
+
+    await Post.findOneAndUpdate({ userId, pokemonId }, req.body);
 
     return res.status(200).json({
       ok: true,
-      message: `updated pokemon ${pokemonId}`
+      message: `pokemon updated: ${pokemonId}`
     })
   } catch (error) {
     console.log(error);
@@ -73,12 +73,12 @@ const editPost = async (req = request, res= response) => {
   }
 }
 
-const readPost = async (req = request, res= response) => {
-  const {pokemonId, userId} = req.body;
+const readPost = async (req = request, res = response) => {
+  const { pokemonId, userId } = req.body;
 
   try {
-    
-    let post = await Post.findOne({pokemonId, userId});
+
+    let post = await Post.findOne({ pokemonId, userId });
     console.log(post);
 
     return res.status(200).json({
